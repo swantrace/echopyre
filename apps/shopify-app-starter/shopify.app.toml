@@ -1,0 +1,4 @@
+name = "My new app"
+scopes = "write_customers,write_orders,write_products"
+extension_directories = ["extensions/*"]
+web_directories = ["."]

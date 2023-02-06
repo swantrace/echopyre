@@ -1,0 +1,27 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  schemas  = ["shopify_app_starter"]
+}
+
+model ShopifyAppStarterSession {
+  id               String  @id @db.VarChar(255)
+  shop             String  @db.VarChar(255)
+  state            String  @db.VarChar(255)
+  isonline         Boolean
+  scope            String? @db.VarChar(255)
+  expires          Int?
+  onlineaccessinfo String? @db.VarChar(255)
+  accesstoken      String? @db.VarChar(255)
+
+  @@map("sessions")
+  @@schema("shopify_app_starter")
+}

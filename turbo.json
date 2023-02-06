@@ -2,14 +2,46 @@
   "$schema": "https://turbo.build/schema.json",
   "pipeline": {
     "build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**"]
+      "dependsOn": ["^db:generate", "^build"],
+      "outputs": ["dist/**", ".next/**"],
+      "env": ["BACKEND_PORT", "PORT", "NODE_ENV"]
     },
     "lint": {
       "outputs": []
     },
     "dev": {
+      "cache": false,
+      "dependsOn": ["^db:generate"],
+      "persistent": true,
+      "env": ["BACKEND_PORT", "PORT", "NODE_ENV"]
+    },
+    "test": {
+      "dependsOn": ["build"],
+      "inputs": [
+        "app/**/*.tsx",
+        "app/**/*.ts",
+        "src/**/*.tsx",
+        "src/**/*.ts",
+        "test/**/*.ts",
+        "test/**/*.tsx"
+      ]
+    },
+    "deploy": {
+      "dependsOn": ["build", "test", "lint"]
+    },
+    "upgrade": {},
+    "db:generate": {
       "cache": false
-    }
-  }
+    },
+    "db:push": {
+      "cache": false
+    },
+    "db:migrate:deploy": {}
+  },
+  "globalDependencies": [
+    ".env",
+    ".env.local",
+    "./apps/shopify-app-starter/.env.local",
+    "tsconfig.json"
+  ]
 }
