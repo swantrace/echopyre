@@ -4,7 +4,7 @@
     "build": {
       "dependsOn": ["^db:generate", "^build"],
       "outputs": ["dist/**", ".next/**"],
-      "env": ["BACKEND_PORT", "PORT", "NODE_ENV"]
+      "env": ["BACKEND_PORT", "PORT", "NODE_ENV", "SHOPIFY_API_KEY"]
     },
     "lint": {
       "outputs": []
@@ -41,7 +41,7 @@
   "globalDependencies": [
     ".env",
     ".env.local",
-    "./apps/shopify-app-starter/.env.local",
+    "./apps/shopify-app-starter/.env",
     "tsconfig.json"
   ]
 }
