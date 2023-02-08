@@ -20,6 +20,7 @@ importers:
       '@shopify/app': 3.38.0
       '@shopify/app-bridge': ^3.7.2
       '@shopify/app-bridge-react': ^3.7.2
+      '@shopify/app-bridge-utils': ^3.5.1
       '@shopify/cli': 3.38.0
       '@shopify/polaris': ^10.26.0
       '@shopify/shopify-api': ^6.1.0
@@ -67,6 +68,7 @@ importers:
       '@shopify/app': 3.38.0_oblloc7sazmvl3jfzbp57q735i
       '@shopify/app-bridge': 3.7.2
       '@shopify/app-bridge-react': 3.7.2_react@18.2.0
+      '@shopify/app-bridge-utils': 3.5.1
       '@shopify/cli': 3.38.0_@types+react@18.0.27
       '@shopify/polaris': 10.26.0_biqbaboplfbrettd7655fr4n2y
       '@shopify/shopify-api': 6.1.0
@@ -798,6 +800,12 @@ packages:
     dependencies:
       '@shopify/app-bridge': 3.7.2
       react: 18.2.0
+    dev: false
+
+  /@shopify/app-bridge-utils/3.5.1:
+    resolution: {integrity: sha512-VZRvRfg1nF/0/C7zIwYlQ2RXY2S7ALw04Lp6vXPkzBxggDYakx9Lbvc5/k7ZTvhwZv2q8+FVHh319IMW81b27Q==}
+    dependencies:
+      '@shopify/app-bridge': 3.7.2
     dev: false
 
   /@shopify/app-bridge/3.7.2:

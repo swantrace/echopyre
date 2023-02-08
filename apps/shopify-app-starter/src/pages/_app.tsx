@@ -1,6 +1,7 @@
 import type { AppProps } from "next/app";
 import dynamic from "next/dynamic";
 import { PolarisProvider, QueryProvider } from "../components/providers";
+import "@shopify/polaris/build/esm/styles.css";
 
 const AppBridgeProvider = dynamic(
   () => import("../components/providers/AppBridgeProvider"),
