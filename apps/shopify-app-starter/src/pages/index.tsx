@@ -8,7 +8,7 @@ import {
   Image,
   Stack,
   Link,
-  Heading,
+  Text,
 } from "@shopify/polaris";
 import { TitleBar } from "@shopify/app-bridge-react";
 import { ProductsCard } from "../components/ProductsCard";
@@ -30,21 +30,29 @@ export default function Web({ url }: { url: string }) {
             >
               <Stack.Item fill>
                 <TextContainer spacing="loose">
-                  <h2>Nice work on building a Shopify app 🎉</h2>
+                  <Text variant="headingMd" as="h2">
+                    Nice work on building a Shopify app 🎉
+                  </Text>
                   <p>
                     Your app is ready to explore! It contains everything you
                     need to get started including the{" "}
-                    <Link url="https://polaris.shopify.com/" external>
+                    <Link
+                      url="https://polaris.shopify.com/"
+                      external={"true" as unknown as boolean}
+                    >
                       Polaris design system
                     </Link>
                     ,{" "}
-                    <Link url="https://shopify.dev/api/admin-graphql" external>
+                    <Link
+                      url="https://shopify.dev/api/admin-graphql"
+                      external={"true" as unknown as boolean}
+                    >
                       Shopify Admin API
                     </Link>
                     , and{" "}
                     <Link
                       url="https://shopify.dev/apps/tools/app-bridge"
-                      external
+                      external={"true" as unknown as boolean}
                     >
                       App Bridge
                     </Link>{" "}
@@ -58,7 +66,7 @@ export default function Web({ url }: { url: string }) {
                     Learn more about building out your app in{" "}
                     <Link
                       url="https://shopify.dev/apps/getting-started/add-functionality"
-                      external
+                      external={"true" as unknown as boolean}
                     >
                       this Shopify tutorial
                     </Link>{" "}
