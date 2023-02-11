@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { useMemo, useState } from "react";
 import { Provider } from "@shopify/app-bridge-react";
 import { Banner, Layout, Page } from "@shopify/polaris";
@@ -12,39 +12,31 @@ declare global {
 
 const AppBridgeProvider = ({ children }: { children: ReactNode }) => {
   const { asPath, replace: nextRouterReplace } = useRouter();
+  const { pathname, search, hash } = new URL(`https://anything${asPath}`);
 
-  const routerConfig = useMemo(() => {
-    const { pathname, search, hash } = new URL(`https://anything${asPath}`);
-    return {
-      history: {
-        replace: (path: string) =>
-          nextRouterReplace(path) as unknown as (path: string) => void,
-      },
-      location: {
-        pathname,
-        search,
-        hash,
-      },
-    };
-  }, [asPath, nextRouterReplace]);
+  const routerConfig = {
+    history: {
+      replace: (path: string) =>
+        nextRouterReplace(path) as unknown as (path: string) => void,
+    },
+    location: {
+      pathname,
+      search,
+      hash,
+    },
+  };
+  console.log("routerConfig.location.search: ", routerConfig.location.search);
+  const host =
+    new URLSearchParams(routerConfig.location.search).get("host") ||
+    window.__SHOPIFY_DEV_HOST;
 
-  const [appBridgeConfig] = useState<{
-    host: string;
-    apiKey: string;
-    forceRedirect: boolean;
-  }>(() => {
-    const host =
-      new URLSearchParams(routerConfig.location.search).get("host") ||
-      window.__SHOPIFY_DEV_HOST;
+  window.__SHOPIFY_DEV_HOST = host;
 
-    window.__SHOPIFY_DEV_HOST = host;
-
-    return {
-      host,
-      apiKey: process.env.SHOPIFY_API_KEY!,
-      forceRedirect: true,
-    };
-  });
+  const appBridgeConfig = {
+    host,
+    apiKey: process.env.SHOPIFY_API_KEY!,
+    forceRedirect: true,
+  };
 
   if (!process.env.SHOPIFY_API_KEY || !appBridgeConfig.host) {
     const bannerProps = !process.env.SHOPIFY_API_KEY
