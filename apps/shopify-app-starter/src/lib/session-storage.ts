@@ -14,7 +14,6 @@ class SupabaseSessionStorage implements SessionStorage {
           : [key, value]
       );
 
-    console.log("entries: ", entries);
     return Boolean(
       await prisma.$executeRawUnsafe(
         `

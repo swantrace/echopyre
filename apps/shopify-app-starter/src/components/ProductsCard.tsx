@@ -133,17 +133,13 @@ export function ProductsCard() {
     meta: productsQueryMeta,
   });
 
-  const { error: createProductsError, mutate: createProducts } = useMutation<
-    any,
-    any,
-    ReactQueryMeta
-  >({
+  const {
+    error: createProductsError,
+    mutate: createProduct,
+    mutateAsync: createProductAsync,
+  } = useMutation<any, any, ReactQueryMeta>({
     onMutate: async () => {
       setIsLoading(true);
-    },
-    onSuccess: async () => {
-      await refetchProductCount();
-      setToastProps({ content: "5 products created!", error: false });
     },
     onError: async () => {
       setIsLoading(false);
@@ -159,19 +155,25 @@ export function ProductsCard() {
   );
 
   const handlePopulate = async () => {
-    for (let i = 0; i < 5; i++) {
-      createProducts({
-        api: "rest",
-        method: "post",
-        path: "products",
-        data: {
-          product: {
-            title: `${randomTitle()}`,
-            variants: [{ price: randomPrice() }],
-          },
-        },
-      });
-    }
+    await Promise.all(
+      Array(5)
+        .fill(0)
+        .map(() =>
+          createProductAsync({
+            api: "rest",
+            method: "post",
+            path: "products",
+            data: {
+              product: {
+                title: `${randomTitle()}`,
+                variants: [{ price: randomPrice() }],
+              },
+            },
+          })
+        )
+    );
+    await refetchProductCount();
+    setToastProps({ content: "5 products created!", error: false });
   };
 
   return (

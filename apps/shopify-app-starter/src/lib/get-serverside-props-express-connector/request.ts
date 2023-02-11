@@ -33,7 +33,8 @@ function acceptsF(this: any) {
 function convertIncomingMessageToExpressRequest(
   req: IncomingMessage &
     Partial<{
-      query: string;
+      query: any;
+      path: string;
       get: Function;
       header: Function;
       accepts: Function;
@@ -45,13 +46,14 @@ function convertIncomingMessageToExpressRequest(
   req.next = next;
   req.originalUrl = req.originalUrl || req.url;
   if (!req.query) {
-    // @ts-ignore
-    const val = parseurl(req).query;
-    // @ts-ignore
-    req.query = qs.parse(val);
+    const parsedUrl = parseurl(req);
+    const val = parsedUrl!.query;
+    req.query = qs.parse(val as string);
+    req.path = parsedUrl?.path ?? "/";
   }
   req.accepts = acceptsF.bind(req);
   req.get = req.header = header.bind(req);
+
   return req;
 }
 

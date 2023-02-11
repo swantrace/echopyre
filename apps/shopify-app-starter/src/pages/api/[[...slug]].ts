@@ -50,85 +50,77 @@ router.use(
   expressWrapper<any, any>(shopify.validateAuthenticatedSession())
 );
 
-router.post(
-  "/api/graphql",
-  expressWrapper(async (req, res) => {
-    const session = (res as unknown as Express.Response).locals.shopify.session;
-    const client = new shopify.api.clients.Graphql({ session });
-    const { data, query = {}, extraHeaders = {}, tries = 1 } = req.body;
+router.post("/api/graphql", async (req, res) => {
+  const session = (res as unknown as Express.Response).locals.shopify.session;
+  const client = new shopify.api.clients.Graphql({ session });
+  const { data, query = {}, extraHeaders = {}, tries = 1 } = req.body;
 
-    try {
-      const { body } = await client.query({
-        data,
-        query,
-        extraHeaders,
-        tries,
-      });
+  try {
+    const { body } = await client.query({
+      data,
+      query,
+      extraHeaders,
+      tries,
+    });
 
-      res.status(200).send(body);
-    } catch (e: any) {
-      if (e instanceof GraphqlQueryError) {
-        res
-          .status((e.response?.code as number) ?? 500)
-          .send({ error: (e.response?.errors as Error[])?.[0]?.message });
-      } else {
-        res.status(500).send({ error: e.message });
-      }
+    res.status(200).send(body);
+  } catch (e: any) {
+    if (e instanceof GraphqlQueryError) {
+      res
+        .status((e.response?.code as number) ?? 500)
+        .send({ error: (e.response?.errors as Error[])?.[0]?.message });
+    } else {
+      res.status(500).send({ error: e.message });
     }
-  })
-);
+  }
+});
 
-router.post(
-  "/api/rest",
-  expressWrapper(async (req, res) => {
-    const session = (res as unknown as Express.Response).locals.shopify.session;
-    const client = new shopify.api.clients.Rest({ session });
+router.post("/api/rest", async (req, res) => {
+  const session = (res as unknown as Express.Response).locals.shopify.session;
+  const client = new shopify.api.clients.Rest({ session });
 
-    const {
-      method,
+  const {
+    method,
+    path,
+    data = {},
+    type = DataType.JSON,
+    query = {},
+    extraHeaders = {},
+    tries = 1,
+  }: {
+    method: "get" | "post" | "put" | "delete";
+    path: string;
+    data?: any;
+    type?: DataType;
+    query?: {
+      [key: string]: QueryParams;
+    };
+    extraHeaders?: HeaderParams;
+    tries?: number;
+  } = req.body;
+
+  try {
+    const { body } = await client[method]({
       path,
-      data = {},
-      type = DataType.JSON,
-      query = {},
-      extraHeaders = {},
-      tries = 1,
-    }: {
-      method: "get" | "post" | "put" | "delete";
-      path: string;
-      data?: any;
-      type?: DataType;
-      query?: {
-        [key: string]: QueryParams;
-      };
-      extraHeaders?: HeaderParams;
-      tries?: number;
-    } = req.body;
+      data,
+      type,
+      query,
+      extraHeaders,
+      tries,
+    });
 
-    try {
-      const { body } = await client[method]({
-        path,
-        data,
-        type,
-        query,
-        extraHeaders,
-        tries,
-      });
-
-      (res as unknown as Express.Response).send(body);
-    } catch (e: any) {
-      (res as unknown as Express.Response)
-        .status(e.response?.code ?? 500)
-        .send({
-          error:
-            Object.entries(e.response?.body?.errors ?? {})
-              .map(([key, value]) => `${key}: ${value}`)
-              .join("; ") ||
-            e.message ||
-            "unknown error",
-        });
-    }
-  })
-);
+    res.send(body);
+  } catch (e: any) {
+    res.status(e.response?.code ?? 500).send({
+      error:
+        Object.entries(e.response?.body?.errors ?? {})
+          .map(([key, value]) => `${key}: ${value}`)
+          .join("; ") ||
+        e.message ||
+        "unknown error",
+    });
+  }
+});
 
 export default router.handler({
   onError: (err: any, req, res) => {
@@ -139,3 +131,9 @@ export default router.handler({
     res.status(404).end("Page is not found");
   },
 });
+
+export const config = {
+  api: {
+    externalResolver: true,
+  },
+};
