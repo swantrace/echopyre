@@ -25,7 +25,6 @@ const AppBridgeProvider = ({ children }: { children: ReactNode }) => {
       hash,
     },
   };
-  console.log("routerConfig.location.search: ", routerConfig.location.search);
   const host =
     new URLSearchParams(routerConfig.location.search).get("host") ||
     window.__SHOPIFY_DEV_HOST;
@@ -73,7 +72,10 @@ const AppBridgeProvider = ({ children }: { children: ReactNode }) => {
       </Page>
     );
   }
-
+  console.log("\n---------------------------------------");
+  console.log("appBridgeConfig: ", appBridgeConfig);
+  console.log("routerConfig: ", routerConfig);
+  console.log("\n---------------------------------------");
   return (
     <Provider config={appBridgeConfig} router={routerConfig}>
       {children}
